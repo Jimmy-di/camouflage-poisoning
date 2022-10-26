@@ -1,5 +1,8 @@
 from arg_parse import options
 from models import get_model
+from ingredients import Ingredient
+from victim import Victim
+from kettle import Kettle
 
 import torch
 
@@ -18,10 +21,17 @@ args = options().parse_args()
 
 if __name__ == "__main__":
     start_time = time.time()
-
-    MODEL = get_model(args)
-    print(MODEL)
-
     print(args)
+
+    ingredients = Ingredient(args)
+    ingredients.initialize_attack_setup(args)
+    
+    victim = Victim()
+    victim.initialize_victim(args)
+    victim.train(ingredients, args.loadmodel)
+
+    kettle = Kettle()
+    poison_delta = kettle.brew(victim, ingredients)
+
     print("Ends here") 
     print("--- %s seconds ---" % (time.time() - start_time))

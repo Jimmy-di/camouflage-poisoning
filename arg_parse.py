@@ -16,14 +16,15 @@ def options():
     parser.add_argument('--model_name', default='ResNet18', type=str, choices=['ResNet18', 'ResNet34', 'ResNet50', 'VGG16', 'VGG11', 'MLP', 'MobileNet'])
     parser.add_argument('--dataset', default='CIFAR10', type=str, choices=['CIFAR10', 'CIFAR-Binary', 'ImageNet', 'Imagenette', 'Imagewoof'])
     parser.add_argument('--epochs', default=None, type=int, help='Training Epochs')
-
+    parser.add_argument('--batchsize', default=128, type=int, help='Poison batch size during optimization')
+    
     # Reproducibility management:
     parser.add_argument('--seed', default=None, type=int, help='Initialize the setup with this key.')
 
     # Poison properties / controlling the strength of the attack:
     parser.add_argument('--eps', default=16, type=float)
-    parser.add_argument('--pbudget', default=0.1, type=float, help='Fraction of training data that is used as poisons')
-    parser.add_argument('--cbudget', default=0.1, type=float, help='Fraction of training data that is used as camouflages')
+    parser.add_argument('--pbudget', default=0.01, type=float, help='Fraction of training data that is used as poisons')
+    parser.add_argument('--cbudget', default=0.01, type=float, help='Fraction of training data that is used as camouflages')
     parser.add_argument('--targets', default=1, type=int, help='Number of targets')
 
     # Files and folders
