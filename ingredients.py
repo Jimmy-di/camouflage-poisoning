@@ -113,7 +113,6 @@ class Ingredient():
         for index, val in enumerate(poison_index):
             self.poison_dict[val] = index
 
-        print(poison_index)
         self.poisonset = Subset(self.trainset, poison_index)
         self.poisonloader = torch.utils.data.DataLoader(self.poisonset, batch_size=20, drop_last=False)
 
@@ -133,7 +132,6 @@ class Ingredient():
         for index, val in enumerate(camou_index):
             self.camou_dict[val] = index
 
-        print(camou_index)
         self.camouset = Subset(self.trainset, camou_index)
         self.camouloader = torch.utils.data.DataLoader(self.camouset, batch_size=20, drop_last=False)
     

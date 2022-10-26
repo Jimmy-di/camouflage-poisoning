@@ -16,7 +16,7 @@ class CIFAR10(Dataset):
     # Overloaded the getitem method to return index as well
     def __getitem__(self, index):
         data, target = self.cifar10[index]
-        return data, target, index
+        return index, data, target
     
     # Method to get all images' indices from a certain class without iterating through the loader
     def get_index(self, target_label):

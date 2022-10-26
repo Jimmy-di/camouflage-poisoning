@@ -12,12 +12,12 @@ def options():
 
 
     ###########################################################################
-    # Central:
+    # Training params:
     parser.add_argument('--model_name', default='ResNet18', type=str, choices=['ResNet18', 'ResNet34', 'ResNet50', 'VGG16', 'VGG11', 'MLP', 'MobileNet'])
     parser.add_argument('--dataset', default='CIFAR10', type=str, choices=['CIFAR10', 'CIFAR-Binary', 'ImageNet', 'Imagenette', 'Imagewoof'])
-    parser.add_argument('--epochs', default=None, type=int, help='Training Epochs')
-    parser.add_argument('--batchsize', default=128, type=int, help='Poison batch size during optimization')
-    
+    parser.add_argument('--epochs', default=40, type=int, help='Training Epochs')
+    parser.add_argument('--batchsize', default=128, type=int, help='Training batch size during optimization')
+    parser.add_argument('--eta', default=0.01, type=float, help='Initial LR for training')
     # Reproducibility management:
     parser.add_argument('--seed', default=None, type=int, help='Initialize the setup with this key.')
 
@@ -32,7 +32,8 @@ def options():
     parser.add_argument('--log_path', default='tables/', type=str)
     parser.add_argument('--poison_path', default='poisons/', type=str)
     parser.add_argument('--camou_path', default='camouflage/', type=str)
-    parser.add_argument('--data_path', default='~/data', type=str)
+    parser.add_argument('--data_path', default='~/data/', type=str)
+    parser.add_argument('--model_path', default='model/', type=str)
 
     ###########################################################################
 
