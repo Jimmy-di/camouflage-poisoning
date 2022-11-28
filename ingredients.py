@@ -14,10 +14,12 @@ import random
 import math 
 
 from Constants import CIFAR_mean, CIFAR_std, Imagenet_mean, Imagenet_std
-class Ingredient():
 
-    def __init__(self, args) -> None:
+class Ingredient:
 
+    def __init__(self, args, setup=dict(device=torch.device('cpu'), dtype=torch.float)) -> None:
+
+        self.args, self.setup = args, setup
         traindir = None
         valdir = None
         self.num_classes = 10
@@ -29,10 +31,10 @@ class Ingredient():
             traindir = os.path.join(args.datapath, 'train')
             valdir = os.path.join(args.datapath, 'val')
         else:
-            data_mean = (0.485, 0.456, 0.406)
-            data_std = (0.229, 0.224, 0.225)
+            self.data_mean = (0.485, 0.456, 0.406)
+            self.data_std = (0.229, 0.224, 0.225)
 
-        normalize = transforms.Normalize(mean=data_mean,std=data_std)
+        normalize = transforms.Normalize(mean=self.data_mean,std=self.data_std)
 
         if traindir:
             self.trainset = ImageFolder(
@@ -74,25 +76,25 @@ class Ingredient():
         random.seed(seed + 6)
         return
     
-    def initialize_attack_setup(self, args):
-        if args.seed:
-            self.set_global_seed(args.seed)
+    def initialize_attack_setup(self):
+        if self.args.seed:
+            self.set_global_seed(self.args.seed)
         else:
-            seed = np.random.randint(2**32-1)
+            seed = np.random.randint(10000111)
             self.set_global_seed(seed)
 
         avail_classes = np.arange(self.num_classes)
-        [target_class, poison_class] = np.random.choice(avail_classes, replace=False, size=2)
-        camou_class = target_class
+        [self.target_class, self.poison_class] = np.random.choice(avail_classes, replace=False, size=2)
+        camou_class = self.target_class
 
         # Choose Target
 
-        target_indices = self.validationset.get_index(target_class)
+        target_indices = self.validationset.get_index(self.target_class)
         target_index = []
         target_index.append(np.random.choice(target_indices))
 
-        targetset = Subset(self.validationset, target_index)
-        self.targetloader = torch.utils.data.DataLoader(targetset)
+        self.targetset = Subset(self.validationset, target_index)
+        self.targetloader = torch.utils.data.DataLoader(self.targetset)
 
         print("Target image is chosen with ID {}".format(target_index))
 
@@ -100,8 +102,8 @@ class Ingredient():
 
         poison_index = []
 
-        poison_index = self.trainset.get_index(poison_class)
-        number_poisons = math.floor(args.pbudget * len(self.trainset))
+        poison_index = self.trainset.get_index(self.poison_class)
+        number_poisons = math.floor(self.args.pbudget * len(self.trainset))
 
         if number_poisons > len(poison_index):
             number_poisons = len(poison_index)
@@ -119,7 +121,7 @@ class Ingredient():
 
         # Choose Camouflage Images:
         camou_index = self.trainset.get_index(camou_class)
-        number_camous = math.floor(args.cbudget * len(self.trainset))
+        number_camous = math.floor(self.args.cbudget * len(self.trainset))
         
         if number_camous > len(camou_index):
             number_camous = len(camou_index)

@@ -4,7 +4,7 @@ from arg_parse import options
 from models import get_model
 from ingredients import Ingredient
 from victim import Victim
-from kettle import Kettle
+from witch import Witch
 
 import torch
 
@@ -24,23 +24,33 @@ args = options().parse_args()
 if __name__ == "__main__":
     start_time = time.time()
 
-    device = torch.device('cpu')
-        
-    if torch.cuda.is_available():
-        device = torch.device('cuda')
-        print("Running on a GPU")
-    else:
-        print("Running on CPU...Are you sure you want to do this?")
+    
+    device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+    setup = dict(device=device, dtype=torch.float)
 
-    ingredients = Ingredient(args)
-    ingredients.initialize_attack_setup(args)
+    ingredients = Ingredient(args, setup=setup)
+    ingredients.initialize_attack_setup()
 
-    victim = Victim()
-    victim.initialize_victim(args)
-    victim.train(ingredients, args.loadmodel, args.savemodel, device)
+    # Train model on clean images
 
-    kettle = Kettle()
-    poison_delta = kettle.brew(victim, ingredients)
+    victim = Victim(args, setup=setup)
+    victim.initialize_victim()
+    victim.train(ingredients)
 
+    # Obtain Poison
+    witch = Witch(args, setup=setup)
+    poison_delta = witch.brew(victim, ingredients, True)
+
+    # Train model on clean + poisoned images to evaluate poisons
+    victim.retrain(ingredients)
+    
+    # Obtain Camouflages
+
+    camou_delta = witch.brew(victim, ingredients, False)
+
+    # Train model on clean + poisoned + camou images to evaluate camouflages
+    victim.retrain(ingredients)
+
+    #save(ingredients, poison_delta, camou_delta)
     print("Ends here") 
     print("--- %s seconds ---" % (time.time() - start_time))
