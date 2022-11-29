@@ -25,11 +25,11 @@ class Ingredient:
         self.num_classes = 10
 
         if args.dataset == 'Imagenette':
-            traindir = os.path.join(args.datapath, 'train')
-            valdir = os.path.join(args.datapath, 'val')
+            traindir = os.path.join(args.datapath, 'imagenette2/train')
+            valdir = os.path.join(args.datapath, 'imagenette2/val')
         elif args.dataset == 'Imagewoof':
-            traindir = os.path.join(args.datapath, 'train')
-            valdir = os.path.join(args.datapath, 'val')
+            traindir = os.path.join(args.datapath, 'imagewoof2/train')
+            valdir = os.path.join(args.datapath, 'imagewoof2/val')
         else:
             self.data_mean = (0.485, 0.456, 0.406)
             self.data_std = (0.229, 0.224, 0.225)

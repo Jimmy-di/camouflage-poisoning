@@ -32,7 +32,7 @@ def options():
     parser.add_argument('--log_path', default='tables/', type=str)
     parser.add_argument('--poison_path', default='poisons/', type=str)
     parser.add_argument('--camou_path', default='camouflage/', type=str)
-    parser.add_argument('--data_path', default='~/data/', type=str)
+    parser.add_argument('--data_path', default='data/', type=str)
     parser.add_argument('--model_path', default='model/', type=str)
 
     ###########################################################################
