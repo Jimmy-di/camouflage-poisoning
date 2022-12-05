@@ -10,6 +10,4 @@ We introduce camouflaged data poisoning attacks, a new attack vector that arises
 * torchvision > 0.5.*
 * [Imagenette](https://github.com/fastai/imagenette): only if the Imagenette dataset is used
 * [Imagewoof](https://github.com/fastai/imagenette): only if the Imagewoof dataset is used
-# Dependencies
-
 ===
