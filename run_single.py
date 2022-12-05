@@ -1,10 +1,10 @@
 # Run a single experiment
 
-from arg_parse import options
-from models import get_model
-from ingredients import Ingredient
-from victim import Victim
-from witch import Witch
+from tools.arg_parse import options
+from tools.models import get_model
+from forest.ingredients import Ingredient
+from forest.victim import Victim
+from forest.witch import Witch
 
 import torch
 

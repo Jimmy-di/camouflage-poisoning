@@ -3,7 +3,7 @@ import os
 import torch
 import torchvision
 from image_folders import ImageFolder #, Dataset
-from cifar_10 import CIFAR10
+from tools.cifar_10 import CIFAR10
 
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
@@ -13,7 +13,7 @@ import numpy as np
 import random
 import math 
 
-from Constants import CIFAR_mean, CIFAR_std, Imagenet_mean, Imagenet_std
+from tools.Constants import CIFAR_mean, CIFAR_std, Imagenet_mean, Imagenet_std
 
 class Ingredient:
 

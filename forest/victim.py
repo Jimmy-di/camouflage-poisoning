@@ -1,4 +1,4 @@
-from models import get_model
+from tools.models import get_model
 
 import torch
 import numpy as np
