@@ -1,7 +1,7 @@
 import torch
 import torchvision
 import numpy as np
-from image_folders import ImageFolder #, Dataset
+from tools.image_folders import ImageFolder #, Dataset
 
 class Witch:
 

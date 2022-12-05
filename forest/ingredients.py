@@ -2,7 +2,7 @@
 import os
 import torch
 import torchvision
-from image_folders import ImageFolder #, Dataset
+from tools.image_folders import ImageFolder #, Dataset
 from tools.cifar_10 import CIFAR10
 
 import torchvision.transforms as transforms

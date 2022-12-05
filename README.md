@@ -10,4 +10,9 @@ We introduce camouflaged data poisoning attacks, a new attack vector that arises
 * torchvision > 0.5.*
 * [Imagenette](https://github.com/fastai/imagenette): only if the Imagenette dataset is used
 * [Imagewoof](https://github.com/fastai/imagenette): only if the Imagewoof dataset is used
-===
+
+## Usage
+
+Use run_single.py to start a quick run with default parameters.
+
+To use Imagenette or Imagewoof dataset, run data/fetch_dataset.sh to download and unzip the images. (You may also do it manually)
