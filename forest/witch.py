@@ -14,9 +14,9 @@ class Witch:
         self.mean_tensor = torch.tensor(ingredient.data_mean)[None, :, None, None]
 
         poison_delta = torch.randn(len(ingredient.poisonset), *ingredient.trainset[0][1].shape)
-        poison_delta *= self.args.eps / self.std_tensor / 255
-        poison_delta.data = torch.max(torch.min(poison_delta, self.args.eps / (self.std_tensor * 255)),
-                                             -self.args.eps / (self.std_tensor * 255))
+        poison_delta *= self.args.pepsilon / self.std_tensor / 255
+        poison_delta.data = torch.max(torch.min(poison_delta, self.args.pepsilon / (self.std_tensor * 255)),
+                                             -self.args.pepsilon / (self.std_tensor * 255))
         return poison_delta
 
     def calculate_loss(self, inputs, labels, victim, target_grad, target_grad_norm):
@@ -56,7 +56,8 @@ class Witch:
         
         if len(ingredient.poisonset) > 0:
             init_lr = 0.1
-            for trial in range(self.args.restarts):            
+            for trial in range(self.args.prestarts):    
+                print("Trial #{}:".format(trial))        
                 poison_delta = self.initialize_delta(ingredient)
                 att_optimizer = torch.optim.Adam([poison_delta], lr=init_lr)
 
@@ -67,6 +68,8 @@ class Witch:
                 for iter in range(self.args.attackiter):
                     target_loss = 0
                     poison_correct = 0
+                    poison_total = 0
+
                     for batch, example in enumerate(ingredient.poisonloader):
                         ids, inputs, labels = example
 
@@ -88,20 +91,24 @@ class Witch:
                             inputs[batch_positions] += delta_slice
 
                         loss, p_correct = self.calculate_loss(inputs, labels, victim, target_grad, target_grad_norm)
-                        
+
                         # Update Step:
                         poison_delta.grad[poison_slices] = delta_slice.grad.detach().to(device=torch.device('cpu'))
                         poison_bounds[poison_slices] = poison_images.detach().to(device=torch.device('cpu'))
 
                         target_loss += loss
                         poison_correct += p_correct
+                        poison_total += len(labels)
 
+                    if iter % 50 == 0:
+                        print("For iterations {} Target-Poison Loss is {}".format(iter, target_loss/(batch + 1)))
+                        print("For iterations {} Poison accuracy is {}".format(iter, poison_correct / poison_total))
                     att_optimizer.step()
-                    att_optimizer.zero_grad()
+                    # att_optimizer.zero_grad()
   
                     with torch.no_grad():
                     # Projection Step 
-                        poison_delta.data = torch.max(torch.min(poison_delta, self.args.eps / self.std_tensor / 255), -self.args.eps / self.std_tensor / 255)
+                        poison_delta.data = torch.max(torch.min(poison_delta, self.args.pepsilon / self.std_tensor / 255), -self.args.pepsilon / self.std_tensor / 255)
                         poison_delta.data = torch.max(torch.min(poison_delta, (1 - self.mean_tensor) / self.std_tensor - poison_bounds), -self.mean_tensor / self.std_tensor - poison_bounds)
 
                     if iter == self.args.attackiter - 1:
@@ -169,7 +176,7 @@ class Witch:
   
                     with torch.no_grad():
                     # Projection Step 
-                        camou_delta.data = torch.max(torch.min(camou_delta, self.args.eps / self.std_tensor / 255), -self.args.eps / self.std_tensor / 255)
+                        camou_delta.data = torch.max(torch.min(camou_delta, self.args.pepsilon / self.std_tensor / 255), -self.args.pepsilon / self.std_tensor / 255)
                         camou_delta.data = torch.max(torch.min(camou_delta, (1 - mean_tensor) / self.std_tensor - poison_bounds), -mean_tensor / self.std_tensor - poison_bounds)
 
                     if iter == self.args.attackiter - 1:

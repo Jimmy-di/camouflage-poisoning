@@ -2,7 +2,7 @@ import torchvision
 # Overwrite getitem method to obtain the index of the images when iterating through the images
 
 from torch.utils.data import Dataset, DataLoader
-
+import numpy as np
 
 class CIFAR10(Dataset):
     def __init__(self, train, transform):
@@ -12,8 +12,7 @@ class CIFAR10(Dataset):
         self.classes = self.cifar10.classes
         self.data = self.cifar10.data
         
-  
-    # Overloaded the getitem method to return index as well
+    # Overloaded the getitem method to return index
     def __getitem__(self, index):
         data, target = self.cifar10[index]
         return index, data, target
