@@ -81,9 +81,9 @@ class Ingredient:
 
     def set_global_seed(self, seed):
         print("Setting seed as {}".format(seed))
-        #torch.manual_seed(seed + 1)
-        #torch.cuda.manual_seed(seed + 2)
-        #torch.cuda.manual_seed_all(seed + 3)
+        torch.manual_seed(seed + 1)
+        torch.cuda.manual_seed(seed + 2)
+        torch.cuda.manual_seed_all(seed + 3)
         np.random.seed(seed)
         return
     
